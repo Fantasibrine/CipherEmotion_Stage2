@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>EmotionCipher</title>
+
+<style>
+
+:root{
+--primary:#8B5CF6;
+--secondary:#10B981;
+--text:#F9FAFB;
+--muted:#9CA3AF;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Inter,system-ui,sans-serif;
+}
+
+body{
+
+background:
+radial-gradient(circle at 20% 20%,#3B0764 0%,transparent 40%),
+radial-gradient(circle at 80% 30%,#064E3B 0%,transparent 40%),
+linear-gradient(135deg,#1E0A2E,#0A0E17);
+
+color:var(--text);
+min-height:100vh;
+
+}
+
+/* NAVBAR */
+
+.navbar{
+
+display:flex;
+justify-content:space-between;
+align-items:center;
+
+padding:20px 8%;
+
+border-bottom:1px solid rgba(255,255,255,0.05);
+
+}
+
+.logo{
+
+font-weight:700;
+font-size:1.2rem;
+
+}
+
+/* NAV LINKS */
+
+.nav-links{
+
+display:flex;
+gap:25px;
+
+}
+
+.nav-links a{
+
+text-decoration:none;
+color:#d1d5db;
+font-size:.9rem;
+
+transition:.25s;
+
+}
+
+.nav-links a:hover{
+color:white;
+}
+
+/* HAMBURGER */
+
+.hamburger{
+
+display:none;
+font-size:1.6rem;
+cursor:pointer;
+
+}
+
+/* HERO */
+
+.hero{
+
+text-align:center;
+padding:120px 20px;
+max-width:900px;
+margin:auto;
+
+}
+
+.hero h1{
+
+font-size:3rem;
+margin-bottom:20px;
+
+background:linear-gradient(90deg,#8B5CF6,#10B981);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+
+}
+
+.hero p{
+
+color:var(--muted);
+line-height:1.6;
+
+}
+
+/* SECTIONS */
+
+.section{
+
+padding:100px 10%;
+max-width:1200px;
+margin:auto;
+
+}
+
+.section h2{
+
+font-size:2rem;
+margin-bottom:20px;
+
+}
+
+/* MOBILE NAV */
+
+@media(max-width:768px){
+
+.nav-links{
+
+position:absolute;
+top:70px;
+right:0;
+
+background:#0A0E17;
+
+width:200px;
+
+flex-direction:column;
+
+padding:20px;
+
+display:none;
+
+border-left:1px solid rgba(255,255,255,0.05);
+
+}
+
+.nav-links a{
+margin:10px 0;
+}
+
+.nav-links.active{
+display:flex;
+}
+
+.hamburger{
+display:block;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="navbar">
+
+<div class="logo">🔐 EmotionCipher</div>
+
+<nav class="nav-links" id="navLinks">
+
+<a href="index.html">Home</a>
+<a href="technology.html">Technology</a>
+<a href="security.html">Security</a>
+<a href="about.html">About</a>
+
+</nav>
+
+<div class="hamburger" onclick="toggleMenu()">☰</div>
+
+</header>
+<section id="technology" class="section">
+
+<h2>Technology</h2>
+
+<p>
+Explain your AI workflow, encryption system, and flowcharts here.
+</p>
+
+</section>
+<script>
+
+function toggleMenu(){
+
+const nav=document.getElementById("navLinks");
+
+nav.classList.toggle("active");
+
+}
+
+</script>
+
+</body>
+</html>
