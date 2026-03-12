@@ -209,6 +209,57 @@ display:block;
     filter: drop-shadow(0 0 6px rgba(139,92,246,0.6));
 }
 
+.flowchart {
+text-align: center;
+padding: 60px 20px;
+}
+
+.flowchart h2{
+margin-bottom:40px;
+font-size:28px;
+}
+
+.flow{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:20px;
+}
+
+.step{
+background:#0f172a;
+color:white;
+padding:20px 30px;
+border-radius:12px;
+max-width:320px;
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+font-weight:500;
+}
+
+.step span{
+display:block;
+font-size:13px;
+margin-top:6px;
+color:#cbd5f5;
+}
+
+.arrow{
+width:3px;
+height:40px;
+background:#8b5cf6;
+position:relative;
+}
+
+.arrow::after{
+content:"";
+position:absolute;
+bottom:-6px;
+left:-5px;
+border-left:6px solid transparent;
+border-right:6px solid transparent;
+border-top:10px solid #8b5cf6;
+}
+
 </style>
 </head>
 
@@ -232,10 +283,55 @@ display:block;
 </header>
 <section id="technology" class="section">
 
-<h2>Technology</h2>
+<!-- <h2>Technology</h2> -->
 
-<p>
-</p>
+<section class="flowchart">
+
+<h2>System Architecture</h2>
+
+<div class="flow">
+
+<div class="step">User Inputs Text</div>
+<div class="arrow"></div>
+
+<div class="step">
+Emotion AI Analysis<br>
+<span>HuggingFace DistilRoBERTa Model</span>
+</div>
+<div class="arrow"></div>
+
+<div class="step">
+Emotion Data Processing<br>
+<span>Emotion probabilities generated</span>
+</div>
+<div class="arrow"></div>
+
+<div class="step">
+AES Encryption<br>
+<span>Web Crypto API + SHA-256</span>
+</div>
+<div class="arrow"></div>
+
+<div class="step">
+Token Generation<br>
+<span>Unique token (EC-XXXX)</span>
+</div>
+<div class="arrow"></div>
+
+<div class="step">
+Secure Storage<br>
+<span>Supabase Database</span>
+</div>
+<div class="arrow"></div>
+
+<div class="step">
+Restore Emotional Insights<br>
+<span>User enters token to decrypt</span>
+</div>
+
+</div>
+
+</section>
 
 </section>
 <script>
