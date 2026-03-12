@@ -210,6 +210,34 @@ display:block;
     object-fit:contain;
     filter: drop-shadow(0 0 6px rgba(139,92,246,0.6));
 }
+
+.container{
+max-width:900px;
+margin:auto;
+padding:50px 20px;
+}
+
+h1{
+/* text-align:center; */
+margin-bottom:30px;
+}
+
+h2{
+margin-top:40px;
+}
+
+p{
+margin-top:10px;
+}
+
+ul{
+margin-top:10px;
+padding-left:20px;
+}
+
+li{
+margin-bottom:8px;
+}
 </style>
 </head>
 
@@ -236,7 +264,101 @@ display:block;
 
 <section id="security" class="section">
 
-<h2>Security</h2>
+<div class="container">
+
+<h1>Security & Privacy</h1>
+
+<p>
+CipherEmotion is designed with a privacy-first architecture to ensure that sensitive emotional insights remain protected. 
+Since emotional data can reveal personal feelings and mental states, the platform implements multiple security layers 
+to safeguard user information. The system encrypts emotional insights, avoids storing sensitive text data, and uses 
+token-based retrieval to protect access.
+</p>
+
+
+<h2>Encryption of Emotional Data</h2>
+
+<p>
+After a user submits a message, the system analyzes the emotional tone using an AI model. 
+The resulting emotional insights and suggestions are combined into a data payload which is 
+then encrypted using AES encryption through the Web Crypto API.
+</p>
+
+<p>
+Encryption ensures that emotional information cannot be read or interpreted without proper 
+decryption. Even if stored data is accessed by unauthorized parties, the encrypted payload 
+remains unreadable and secure.
+</p>
+
+
+<h2>Token-Based Secure Access</h2>
+
+<p>
+Instead of storing user accounts or requiring login credentials, the platform generates a 
+unique token for each emotional record. This token acts as the only key required to retrieve 
+previously stored emotional insights.
+</p>
+
+<p>
+Users can restore their emotional analysis by entering the generated token. Without this 
+token, the encrypted emotional data cannot be accessed or decrypted.
+</p>
+
+<p>
+This approach minimizes identity tracking and keeps the system anonymous.
+</p>
+
+
+<h2>Privacy Protection</h2>
+
+<p>
+CipherEmotion prioritizes user privacy by minimizing the amount of stored personal information. 
+The platform avoids storing sensitive message content in readable form and instead stores only 
+encrypted emotional insights.
+</p>
+
+<ul>
+<li>No user identity or personal account storage</li>
+<li>No plaintext emotional data stored in the database</li>
+<li>Emotional insights encrypted before storage</li>
+<li>Token-based access control for restoring insights</li>
+</ul>
+
+
+<h2>Secure Communication</h2>
+
+<p>
+All communication between the user interface, backend server, and external AI services occurs 
+through secure HTTPS connections. This prevents interception or manipulation of data while it 
+is transmitted across networks.
+</p>
+
+<p>
+Secure API communication ensures that emotional data remains protected during processing and retrieval.
+</p>
+
+
+<h2>Security Technologies Used</h2>
+
+<ul>
+<li>AES Encryption for protecting emotional data</li>
+<li>Web Crypto API for browser-based cryptographic operations</li>
+<li>SHA-256 hashing for secure key generation</li>
+<li>HTTPS secure communication for safe data transmission</li>
+<li>Supabase secure database infrastructure for encrypted storage</li>
+</ul>
+
+
+<h2>Security Summary</h2>
+
+<p>
+CipherEmotion integrates AI emotion analysis with modern encryption techniques to create 
+a privacy-preserving system. Emotional insights are encrypted, securely stored, and can 
+only be restored using a unique token generated for the user. This approach allows emotional 
+data to be analyzed and revisited while maintaining strong privacy protection.
+</p>
+
+</div>
 
 <p>
 </p>
