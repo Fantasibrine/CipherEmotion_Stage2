@@ -1,191 +1,174 @@
 const MODEL_URL = "/api/emotion";
 
-        const SUPABASE_URL = "https://dmabbvhzuyjifpjxmyxf.supabase.co/";
-        const SUPABASE_KEY = "sb_publishable_0eFiuFZ57jYSd83SvNIaeA_6O4Kr02n";
+const SUPABASE_URL = "https://dmabbvhzuyjifpjxmyxf.supabase.co/";
+const SUPABASE_KEY = "sb_publishable_0eFiuFZ57jYSd83SvNIaeA_6O4Kr02n";
 
-        const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const SECRET_KEY = "CipherEmotionHackathonSecret";
+const SECRET_KEY = "CipherEmotionHackathonSecret";
 
-        function generateToken() {
+function generateToken() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let token = "EC-";
 
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let token = "EC-";
+  for (let i = 0; i < 6; i++) {
+    token += chars[Math.floor(Math.random() * chars.length)];
+  }
 
-            for (let i = 0; i < 6; i++) {
-                token += chars[Math.floor(Math.random() * chars.length)];
-            }
+  return token;
+}
 
-            return token;
-        }
+function setStatus(message) {
+  const status = document.getElementById("status");
 
-        function setStatus(message) {
+  status.style.opacity = 0;
 
-            const status = document.getElementById("status");
+  setTimeout(() => {
+    status.innerText = message;
+    status.style.opacity = 1;
+  }, 150);
+}
 
-            status.style.opacity = 0;
+async function queryAI(text) {
+  const response = await fetch(MODEL_URL, {
+    headers: { "Content-Type": "application/json" },
+    method: "POST",
+    body: JSON.stringify({
+      inputs: text,
+      options: { wait_for_model: true },
+    }),
+  });
 
-            setTimeout(() => {
-                status.innerText = message;
-                status.style.opacity = 1;
-            }, 150);
+  const result = await response.json();
 
-        }
+  return result[0]
+    .map((e) => ({
+      label: e.label.toUpperCase(),
+      percent: Math.round(e.score * 100),
+    }))
+    .sort((a, b) => b.percent - a.percent);
+}
 
-        async function queryAI(text) {
+async function getKey() {
+  const encoder = new TextEncoder();
 
-            const response = await fetch(MODEL_URL, {
-                headers: { "Content-Type": "application/json" },
-                method: "POST",
-                body: JSON.stringify({
-                    inputs: text,
-                    options: { wait_for_model: true }
-                })
-            });
+  const hash = await crypto.subtle.digest(
+    "SHA-256",
+    encoder.encode(SECRET_KEY),
+  );
 
-            const result = await response.json();
+  return crypto.subtle.importKey("raw", hash, { name: "AES-GCM" }, false, [
+    "encrypt",
+    "decrypt",
+  ]);
+}
 
-            return result[0]
-                .map(e => ({
-                    label: e.label.toUpperCase(),
-                    percent: Math.round(e.score * 100)
-                }))
-                .sort((a, b) => b.percent - a.percent);
-        }
+function bufferToBase64(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
 
-        async function getKey() {
+function base64ToBuffer(base64) {
+  return Uint8Array.from(atob(base64), (c) => c.charCodeAt(0));
+}
 
-            const encoder = new TextEncoder();
+async function encryptAES(payload) {
+  const encoder = new TextEncoder();
+  const key = await getKey();
 
-            const hash = await crypto.subtle.digest(
-                "SHA-256",
-                encoder.encode(SECRET_KEY)
-            );
+  const iv = crypto.getRandomValues(new Uint8Array(12));
 
-            return crypto.subtle.importKey(
-                "raw",
-                hash,
-                { name: "AES-GCM" },
-                false,
-                ["encrypt", "decrypt"]
-            );
-        }
+  const encrypted = await crypto.subtle.encrypt(
+    { name: "AES-GCM", iv: iv },
+    key,
+    encoder.encode(payload),
+  );
 
-        function bufferToBase64(buffer) {
-            return btoa(String.fromCharCode(...new Uint8Array(buffer)));
-        }
+  const combined = new Uint8Array(iv.length + encrypted.byteLength);
 
-        function base64ToBuffer(base64) {
-            return Uint8Array.from(atob(base64), c => c.charCodeAt(0));
-        }
+  combined.set(iv, 0);
+  combined.set(new Uint8Array(encrypted), iv.length);
 
-        async function encryptAES(payload) {
+  return bufferToBase64(combined);
+}
 
-            const encoder = new TextEncoder();
-            const key = await getKey();
+async function decryptAES(cipher) {
+  const decoder = new TextDecoder();
 
-            const iv = crypto.getRandomValues(new Uint8Array(12));
+  const data = base64ToBuffer(cipher);
 
-            const encrypted = await crypto.subtle.encrypt(
-                { name: "AES-GCM", iv: iv },
-                key,
-                encoder.encode(payload)
-            );
+  const iv = data.slice(0, 12);
+  const encrypted = data.slice(12);
 
-            const combined = new Uint8Array(iv.length + encrypted.byteLength);
+  const key = await getKey();
 
-            combined.set(iv, 0);
-            combined.set(new Uint8Array(encrypted), iv.length);
+  const decrypted = await crypto.subtle.decrypt(
+    { name: "AES-GCM", iv: iv },
+    key,
+    encrypted,
+  );
 
-            return bufferToBase64(combined);
-        }
+  return decoder.decode(decrypted);
+}
 
-        async function decryptAES(cipher) {
+async function runAIEncryption() {
+  const encBtn = document.getElementById("encBtn");
+  encBtn.disabled = true;
 
-            const decoder = new TextDecoder();
+  const text = document.getElementById("input").value.trim();
 
-            const data = base64ToBuffer(cipher);
+  if (!text) {
+    alert("Enter message");
+    encBtn.disabled = false;
+    return;
+  }
 
-            const iv = data.slice(0, 12);
-            const encrypted = data.slice(12);
+  try {
+    setStatus("AI is analyzing emotion...");
 
-            const key = await getKey();
+    const emotions = await queryAI(text);
+    const dominant = emotions[0].label;
 
-            const decrypted = await crypto.subtle.decrypt(
-                { name: "AES-GCM", iv: iv },
-                key,
-                encrypted
-            );
+    const emotionColors = {
+      JOY: "#10B981",
+      ANGER: "#EF4444",
+      SADNESS: "#3B82F6",
+      FEAR: "#8B5CF6",
+      LOVE: "#EC4899",
+      SURPRISE: "#F59E0B",
+    };
 
-            return decoder.decode(decrypted);
-        }
+    const color = emotionColors[dominant] || "#8B5CF6";
 
-        async function runAIEncryption() {
+    document.querySelector(".result-area").style.borderColor = color;
+    /* END */
 
-            const encBtn = document.getElementById("encBtn");
-            encBtn.disabled = true;
+    setStatus("Encrypting message...");
 
-            const text = document.getElementById("input").value.trim();
+    setStatus("Encrypting message...");
 
-            if (!text) {
-                alert("Enter message");
-                encBtn.disabled = false;
-                return;
-            }
+    const emotionJSON = JSON.stringify(emotions);
 
-            try {
+    const cipher = await encryptAES(emotionJSON);
 
-                setStatus("AI is analyzing emotion...");
+    const token = generateToken();
 
-                const emotions = await queryAI(text);
-                const dominant = emotions[0].label;
+    const { error } = await db
+      .from("ciphers")
+      .insert({ token: token, cipher: cipher, message: text });
 
-                spawnEmojis(dominant);
+    if (error) {
+      console.error(error);
+      alert(error.message);
+      encBtn.disabled = false;
+      return;
+    }
 
-                const emotionColors = {
-                    JOY: "#10B981",
-                    ANGER: "#EF4444",
-                    SADNESS: "#3B82F6",
-                    FEAR: "#8B5CF6",
-                    LOVE: "#EC4899",
-                    SURPRISE: "#F59E0B"
-                };
+    setStatus("Encryption successful.");
 
-                const color = emotionColors[dominant] || "#8B5CF6";
+    let barsHTML = "<br><strong>Emotion Redistribution:</strong>";
 
-                document.querySelector(".result-area").style.borderColor = color;
-                /* END */
-
-                setStatus("Encrypting message...");
-
-                setStatus("Encrypting message...");
-
-                const emotionJSON = JSON.stringify(emotions);
-
-                const payload = emotionJSON + "|" + text;
-
-                const cipher = await encryptAES(payload);
-
-                const token = generateToken();
-
-                const { error } = await db
-                    .from("ciphers")
-                    .insert({ token: token, cipher: cipher });
-
-                if (error) {
-                    console.error(error);
-                    alert(error.message);
-                    encBtn.disabled = false;
-                    return;
-                }
-
-                setStatus("Encryption successful.");
-
-                let barsHTML = "<br><strong>Emotion Redistribution:</strong>";
-
-                emotions.forEach((e, i) => {
-
-                    barsHTML += `
+    emotions.forEach((e, i) => {
+      barsHTML += `
 <div class="emotion-bar">
 <div class="emotion-label">${e.label}</div>
 <div class="bar-container">
@@ -194,90 +177,72 @@ const MODEL_URL = "/api/emotion";
 <div class="percent">${e.percent}%</div>
 </div>
 `;
+    });
 
-                });
+    const output = document.getElementById("output");
 
-                const output = document.getElementById("output");
-
-                output.innerHTML = `
+    output.innerHTML = `
 <strong>Cipher Token:</strong> ${token}
 ${barsHTML}
 `;
 
-                setTimeout(() => {
+    spawnEmojis(dominant);
 
-                    emotions.forEach((e, i) => {
+    setTimeout(() => {
+      emotions.forEach((e, i) => {
+        const bar = document.getElementById(`bar${i}`);
+        if (bar) bar.style.width = e.percent + "%";
+      });
+    }, 100);
+  } catch (err) {
+    console.error(err);
+    setStatus("Encryption failed");
+  } finally {
+    encBtn.disabled = false;
+  }
+}
 
-                        const bar = document.getElementById(`bar${i}`);
-                        if (bar) bar.style.width = e.percent + "%";
+async function runDecryption() {
+  const decBtn = document.getElementById("decBtn");
+  decBtn.disabled = true;
 
-                    });
+  const token = document.getElementById("input").value.trim();
 
-                }, 100);
+  if (!token) {
+    alert("Enter token");
+    decBtn.disabled = false;
+    return;
+  }
 
-            }
+  try {
+    setStatus("Fetching cipher from database...");
 
-            catch (err) {
+    const { data, error } = await db
+      .from("ciphers")
+      .select("cipher, message")
+      .eq("token", token)
+      .single();
 
-                console.error(err);
-                setStatus("Encryption failed");
+    if (error || !data) {
+      setStatus("Token not found");
+      decBtn.disabled = false;
+      return;
+    }
 
-            }
+    setStatus("Decrypting message...");
 
-            finally {
+    const emotionJSON = await decryptAES(data.cipher);
 
-                encBtn.disabled = false;
+    const emotions = JSON.parse(emotionJSON);
 
-            }
+    const message = data.message;
 
-        }
+    setStatus("Decryption successful.");
 
-        async function runDecryption() {
+    let barsHTML = "<br><strong>Emotion Redistribution:</strong>";
 
-            const decBtn = document.getElementById("decBtn");
-            decBtn.disabled = true;
-
-            const token = document.getElementById("input").value.trim();
-
-            if (!token) {
-                alert("Enter token");
-                decBtn.disabled = false;
-                return;
-            }
-
-            try {
-
-                setStatus("Fetching cipher from database...");
-
-                const { data, error } = await db
-                    .from("ciphers")
-                    .select("cipher")
-                    .eq("token", token)
-                    .single();
-
-                if (error || !data) {
-                    setStatus("Token not found");
-                    decBtn.disabled = false;
-                    return;
-                }
-
-                setStatus("Decrypting message...");
-
-                const payload = await decryptAES(data.cipher);
-
-                const splitIndex = payload.indexOf("|");
-
-                const emotions = JSON.parse(payload.substring(0, splitIndex));
-
-                const message = payload.substring(splitIndex + 1);
-
-                setStatus("Decryption successful.");
-
-                let barsHTML = "<br><strong>Emotion Redistribution:</strong>";
-
-                emotions.forEach((e, i) => {
-
-                    barsHTML += `
+    emotions.forEach((e, i) => {
+      barsHTML += `
 <div class="emotion-bar">
 <div class="emotion-label">${e.label}</div>
 <div class="bar-container">
@@ -286,92 +251,90 @@ ${barsHTML}
 <div class="percent">${e.percent}%</div>
 </div>
 `;
+    });
 
-                });
+    const output = document.getElementById("output");
 
-                const output = document.getElementById("output");
+    output.innerHTML = `${barsHTML}`;
 
-                output.innerHTML = `
-<strong>Message:</strong> ${message}
-${barsHTML}
-`;
+    setTimeout(() => {
+      emotions.forEach((e, i) => {
+        const bar = document.getElementById(`bar${i}`);
+        if (bar) bar.style.width = e.percent + "%";
+      });
+    }, 100);
+  } catch (err) {
+    console.error(err);
+    setStatus("Decryption failed");
+  } finally {
+    decBtn.disabled = false;
+  }
+}
 
-                setTimeout(() => {
+function goToCipher() {
+  const section = document.querySelector(".cipher-interface");
 
-                    emotions.forEach((e, i) => {
+  section.classList.add("show");
 
-                        const bar = document.getElementById(`bar${i}`);
-                        if (bar) bar.style.width = e.percent + "%";
+  section.scrollIntoView({
+    behavior: "smooth",
+  });
+}
 
-                    });
+function toggleMenu() {
+  const nav = document.getElementById("navLinks");
 
-                }, 100);
+  nav.classList.toggle("active");
+}
 
-            }
+function spawnEmojis(emotion) {
+  const emojiMap = {
+    JOY: ["😄", "🎉", "✨"],
+    ANGER: ["😡", "🔥", "💥"],
+    SADNESS: ["😢", "💧", "🥀"],
+    LOVE: ["❤️", "💕", "😍"],
+    FEAR: ["😨", "👻", "⚡"],
+    SURPRISE: ["😲", "✨", "⚡"],
+  };
 
-            catch (err) {
+  const emojis = emojiMap[emotion] || ["✨"];
 
-                console.error(err);
-                setStatus("Decryption failed");
+  for (let i = 0; i < 20; i++) {
+    const emoji = document.createElement("div");
 
-            }
+    emoji.className = "falling-emoji";
 
-            finally {
+    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
 
-                decBtn.disabled = false;
+    emoji.style.left = Math.random() * 100 + "vw";
 
-            }
+    emoji.style.animationDuration = 2 + Math.random() * 2 + "s";
+
+    document.body.appendChild(emoji);
+
+    setTimeout(() => emoji.remove(), 4000);
+  }
+}
+
+document.querySelectorAll("a").forEach(link => {
+
+    link.addEventListener("click", function(e){
+
+        const url = this.href;
+
+        if(url && !url.includes("#")){
+
+            e.preventDefault();
+
+            document.body.style.opacity = "0";
+            document.body.style.transform = "translateY(20px)";
+
+            setTimeout(()=>{
+                window.location = url;
+            },300);
 
         }
 
-        function goToCipher() {
+    });
 
-            const section = document.querySelector(".cipher-interface");
-
-            section.classList.add("show");
-
-            section.scrollIntoView({
-                behavior: "smooth"
-            });
-
-        }
-
-        function toggleMenu() {
-
-            const nav = document.getElementById("navLinks");
-
-            nav.classList.toggle("active");
-
-        }
-
-        function spawnEmojis(emotion) {
-
-            const emojiMap = {
-                JOY: ["😄", "🎉", "✨"],
-                ANGER: ["😡", "🔥", "💥"],
-                SADNESS: ["😢", "💧", "🥀"],
-                LOVE: ["❤️", "💕", "😍"],
-                FEAR: ["😨", "👻", "⚡"],
-                SURPRISE: ["😲", "✨", "⚡"]
-            };
-
-            const emojis = emojiMap[emotion] || ["✨"];
-
-            for (let i = 0; i < 20; i++) {
-
-                const emoji = document.createElement("div");
-
-                emoji.className = "falling-emoji";
-
-                emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-
-                emoji.style.left = Math.random() * 100 + "vw";
-
-                emoji.style.animationDuration = (2 + Math.random() * 2) + "s";
-
-                document.body.appendChild(emoji);
-
-                setTimeout(() => emoji.remove(), 4000);
-
-            }
-        }
+});
