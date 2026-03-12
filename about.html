@@ -2,261 +2,343 @@
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EmotionCipher</title>
-<link rel="icon" href="favi.png "type="image/png">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EmotionCipher</title>
+    <link rel="icon" href="favi.png " type="image/png">
 
-<style>
+    <style>
+        :root {
+            --primary: #8B5CF6;
+            --secondary: #10B981;
+            --text: #F9FAFB;
+            --muted: #9CA3AF;
+        }
 
-:root{
---primary:#8B5CF6;
---secondary:#10B981;
---text:#F9FAFB;
---muted:#9CA3AF;
-}
+        html {
+            scroll-behavior: smooth;
+        }
 
-html{
-    scroll-behavior: smooth;
-}
+        body {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: pageLoad .8s ease forwards;
+        }
 
-body{
-    opacity:0;
-    transform: translateY(20px);
-    animation: pageLoad .8s ease forwards;
-}
+        @keyframes pageLoad {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
 
-@keyframes pageLoad{
-    from{
-        opacity:0;
-        transform: translateY(20px);
-    }
-    to{
-        opacity:1;
-        transform: translateY(0);
-    }
-}
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Inter,system-ui,sans-serif;
-}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Inter, system-ui, sans-serif;
+        }
 
-body{
+        body {
 
-background:
-radial-gradient(circle at 20% 20%,#3B0764 0%,transparent 40%),
-radial-gradient(circle at 80% 30%,#064E3B 0%,transparent 40%),
-linear-gradient(135deg,#1E0A2E,#0A0E17);
+            background:
+                radial-gradient(circle at 20% 20%, #3B0764 0%, transparent 40%),
+                radial-gradient(circle at 80% 30%, #064E3B 0%, transparent 40%),
+                linear-gradient(135deg, #1E0A2E, #0A0E17);
 
-color:var(--text);
-min-height:100vh;
+            color: var(--text);
+            min-height: 100vh;
 
-}
+        }
 
-/* NAVBAR */
+        /* NAVBAR */
 
-.navbar{
+        .navbar {
 
-display:flex;
-justify-content:space-between;
-align-items:center;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
 
-padding:20px 8%;
+            padding: 20px 8%;
 
-border-bottom:1px solid rgba(255,255,255,0.05);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 
-}
+        }
 
-.logo{
+        .logo {
 
-font-weight:700;
-font-size:1.2rem;
+            font-weight: 700;
+            font-size: 1.2rem;
 
-}
+        }
 
-/* NAV LINKS */
+        /* NAV LINKS */
 
-.nav-links{
+        .nav-links {
 
-display:flex;
-gap:25px;
+            display: flex;
+            gap: 25px;
 
-}
+        }
 
-.nav-links a{
+        .nav-links a {
 
-text-decoration:none;
-color:#d1d5db;
-font-size:.9rem;
+            text-decoration: none;
+            color: #d1d5db;
+            font-size: .9rem;
 
-transition:.25s;
+            transition: .25s;
 
-}
+        }
 
-.nav-links a:hover{
-color:white;
-}
+        .nav-links a:hover {
+            color: white;
+        }
 
-/* HAMBURGER */
+        /* HAMBURGER */
 
-.hamburger{
+        .hamburger {
 
-display:none;
-font-size:1.6rem;
-cursor:pointer;
+            display: none;
+            font-size: 1.6rem;
+            cursor: pointer;
 
-}
+        }
 
-/* HERO */
+        /* HERO */
 
-.hero{
+        .hero {
 
-text-align:center;
-padding:120px 20px;
-max-width:900px;
-margin:auto;
+            text-align: center;
+            padding: 120px 20px;
+            max-width: 900px;
+            margin: auto;
 
-}
+        }
 
-.hero h1{
+        .hero h1 {
 
-font-size:3rem;
-margin-bottom:20px;
+            font-size: 3rem;
+            margin-bottom: 20px;
 
-background:linear-gradient(90deg,#8B5CF6,#10B981);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+            background: linear-gradient(90deg, #8B5CF6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
 
-}
+        }
 
-.hero p{
+        .hero p {
 
-color:var(--muted);
-line-height:1.6;
+            color: var(--muted);
+            line-height: 1.6;
 
-}
+        }
 
-/* SECTIONS */
+        /* SECTIONS */
 
-.section{
+        .section {
 
-padding:100px 10%;
-max-width:1200px;
-margin:auto;
+            padding: 100px 10%;
+            max-width: 1200px;
+            margin: auto;
 
-}
+        }
 
-.section h2{
+        .section h2 {
 
-font-size:2rem;
-margin-bottom:20px;
+            font-size: 2rem;
+            margin-bottom: 20px;
 
-}
+        }
 
-/* MOBILE NAV */
+        /* MOBILE NAV */
 
-@media(max-width:768px){
+        @media(max-width:768px) {
 
-.nav-links{
+            .nav-links {
 
-position:absolute;
-top:70px;
-right:0;
+                position: absolute;
+                top: 70px;
+                right: 0;
 
-background:#0A0E17;
+                background: #0A0E17;
 
-width:200px;
+                width: 200px;
 
-flex-direction:column;
+                flex-direction: column;
 
-padding:20px;
+                padding: 20px;
 
-display:none;
+                display: none;
 
-border-left:1px solid rgba(255,255,255,0.05);
+                border-left: 1px solid rgba(255, 255, 255, 0.05);
 
-}
+            }
 
-.nav-links a{
-margin:10px 0;
-}
+            .nav-links a {
+                margin: 10px 0;
+            }
 
-.nav-links.active{
-display:flex;
-}
+            .nav-links.active {
+                display: flex;
+            }
 
-.hamburger{
-display:block;
-}
+            .hamburger {
+                display: block;
+            }
 
-}
+        }
 
-.logo{
-    display:flex;
-    align-items:center;
-    gap:10px;
-    font-weight:700;
-    font-size:1.2rem;
-}
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
 
-.logo img{
-    width:52px;
-    height:52px;
-    object-fit:contain;
-    filter: drop-shadow(0 0 6px rgba(139,92,246,0.6));
-}
+        .logo img {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.6));
+        }
 
-</style>
+        .container {
+            max-width: 900px;
+            margin: auto;
+            padding: 50px 20px;
+        }
+
+        h1 {
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            margin-top: 40px;
+        }
+
+        p {
+            margin-top: 12px;
+        }
+    </style>
 </head>
 
 <body>
 
-<header class="navbar">
+    <header class="navbar">
 
-<div class="logo"><img id="logo" src="logo.png" alt="">EmotionCipher</div>
+        <div class="logo"><img id="logo" src="logo.png" alt="">EmotionCipher</div>
 
-<nav class="nav-links" id="navLinks">
+        <nav class="nav-links" id="navLinks">
 
-<a href="index.html">Home</a>
-<a href="technology.html">Technology</a>
-<a href="security.html">Security</a>
-<a href="about.html">About</a>
+            <a href="index.html">Home</a>
+            <a href="technology.html">Technology</a>
+            <a href="security.html">Security</a>
+            <a href="about.html">About</a>
 
-</nav>
+        </nav>
 
-<div class="hamburger" onclick="toggleMenu()">☰</div>
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
 
-</header>
+    </header>
 
-<!-- ABOUT -->
+    <!-- ABOUT -->
 
-<section id="about" class="section">
+    <section id="about" class="section">
 
-<h2>About</h2>
+        <div class="container">
 
-<p>
-</p>
+            <h1>About CipherEmotion</h1>
 
-</section>
+            <p>
+                CipherEmotion is an experimental web application that explores the intersection of artificial
+                intelligence,
+                emotional analysis, and data privacy. The platform analyzes the emotional tone of a user's text using an
+                AI-based natural language processing model and transforms the results into encrypted emotional insights.
+            </p>
 
-<script>
+            <p>
+                Instead of storing sensitive emotional information in plain text, the system encrypts emotional data and
+                generates a unique token that allows users to restore their emotional insights later. This approach
+                allows
+                emotional analysis to be performed while maintaining privacy and reducing exposure of sensitive personal
+                data.
+            </p>
 
-function toggleMenu(){
+            <h2>Project Concept</h2>
 
-const nav=document.getElementById("navLinks");
+            <p>
+                The main goal of CipherEmotion is to demonstrate how emotional analysis can be combined with modern
+                security
+                techniques to create a privacy-preserving system. Emotional insights can reveal personal feelings,
+                stress
+                levels, or mental states, which makes privacy an important aspect when handling such information.
+            </p>
 
-nav.classList.toggle("active");
+            <p>
+                By encrypting emotional data and using token-based retrieval, the platform ensures that emotional
+                insights
+                are only accessible to the user who possesses the token. This creates a simple yet effective model for
+                secure emotional data handling.
+            </p>
 
-}
+            <h2>Technology Behind the Project</h2>
 
-</script>
+            <p>
+                The system integrates several modern technologies including AI-powered emotion analysis, cryptographic
+                encryption techniques, and token-based data retrieval. Artificial intelligence is used to detect
+                emotional
+                patterns in text, while encryption ensures that emotional insights remain protected even when stored in
+                a database.
+            </p>
+
+            <p>
+                This combination demonstrates how AI systems can be designed with privacy considerations in mind,
+                especially
+                when working with sensitive information such as emotional or psychological data.
+            </p>
+
+            <h2>Future Vision</h2>
+
+            <p>
+                CipherEmotion represents a small step toward a larger concept focused on mental health and emotional
+                awareness.
+                Future developments may explore deeper emotional analysis, improved AI feedback systems, and stronger
+                privacy
+                mechanisms to help users better understand and reflect on their emotional states.
+            </p>
+
+            <h2>About the Creator</h2>
+
+            <p>
+                CipherEmotion was created by Vedant Gole as an early learning project while studying
+                B.Tech in Computer Science Engineering (IoT & Cybersecurity including Blockchain Technology).
+                This project represents the first implementation of APIs and AI integration while learning
+                web development and exploring how emerging technologies can be applied to real-world problems.
+            </p>
+
+        </div>
+
+    </section>
+
+    <script>
+
+        function toggleMenu() {
+
+            const nav = document.getElementById("navLinks");
+
+            nav.classList.toggle("active");
+
+        }
+
+    </script>
 
 </body>
 
 </html>
-
-
-
