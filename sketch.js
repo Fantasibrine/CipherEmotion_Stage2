@@ -154,7 +154,7 @@ async function runAIEncryption() {
 
     const { error } = await db
       .from("ciphers")
-      .insert({ token: token, cipher: cipher, , message: text });
+      .insert({ token: token, cipher: cipher, message: text });
 
     if (error) {
       console.error(error);
