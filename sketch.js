@@ -41,6 +41,14 @@ async function queryAI(text) {
 
   const result = await response.json();
 
+  if (!response.ok) {
+    throw new Error(result.error || `Server error ${response.status}`);
+  }
+
+  if (!Array.isArray(result[0])) {
+    throw new Error("Unexpected response from emotion API");
+  }
+
   return result[0]
     .map((e) => ({
       label: e.label.toUpperCase(),
