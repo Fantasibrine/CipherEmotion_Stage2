@@ -1,4 +1,4 @@
-const MODEL_URL = "/api/emotion";
+const MODEL_URL = "api/emotion";
 
 const SUPABASE_URL = "https://dmabbvhzuyjifpjxmyxf.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_0eFiuFZ57jYSd83SvNIaeA_6O4Kr02n";
@@ -186,7 +186,7 @@ async function runAIEncryption() {
 ${barsHTML}
 `;
 
-    spawnEmojis(dominant);
+
 
     setTimeout(() => {
       emotions.forEach((e, i) => {
@@ -257,6 +257,8 @@ async function runDecryption() {
 
     output.innerHTML = `${barsHTML}`;
 
+
+
     setTimeout(() => {
       emotions.forEach((e, i) => {
         const bar = document.getElementById(`bar${i}`);
@@ -287,34 +289,7 @@ function toggleMenu() {
   nav.classList.toggle("active");
 }
 
-function spawnEmojis(emotion) {
-  const emojiMap = {
-    JOY: ["😄", "🎉", "✨"],
-    ANGER: ["😡", "🔥", "💥"],
-    SADNESS: ["😢", "💧", "🥀"],
-    LOVE: ["❤️", "💕", "😍"],
-    FEAR: ["😨", "👻", "⚡"],
-    SURPRISE: ["😲", "✨", "⚡"],
-  };
 
-  const emojis = emojiMap[emotion] || ["✨"];
-
-  for (let i = 0; i < 20; i++) {
-    const emoji = document.createElement("div");
-
-    emoji.className = "falling-emoji";
-
-    emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
-
-    emoji.style.left = Math.random() * 100 + "vw";
-
-    emoji.style.animationDuration = 2 + Math.random() * 2 + "s";
-
-    document.body.appendChild(emoji);
-
-    setTimeout(() => emoji.remove(), 4000);
-  }
-}
 
 document.querySelectorAll("a").forEach(link => {
 
