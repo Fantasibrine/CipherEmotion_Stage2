@@ -1,13 +1,5 @@
-const express = require("express");
 const fetch = require("node-fetch");
-const cors = require("cors");
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-// Pull the API key from Vercel's Environment Variables
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
@@ -35,7 +27,20 @@ CRITICAL RULES:
 Return ONLY the raw JSON array. No markdown, no explanation, no wrapping.
 Example: [{"label":"joy","score":0.65},{"label":"anger","score":0.05},{"label":"sadness","score":0.10},{"label":"fear","score":0.05},{"label":"love","score":0.10},{"label":"surprise","score":0.05}]`;
 
-app.post("/emotion", async (req, res) => {
+module.exports = async function handler(req, res) {
+  // Allow CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
   try {
     const { inputs } = req.body;
 
@@ -79,7 +84,4 @@ app.post("/emotion", async (req, res) => {
     console.error(error);
     res.status(500).json({ error: "Server error" });
   }
-});
-
-// IMPORTANT: Export the app instead of calling app.listen()
-module.exports = app;
+};

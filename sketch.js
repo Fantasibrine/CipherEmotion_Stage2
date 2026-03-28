@@ -1,4 +1,4 @@
-const MODEL_URL = "api/emotion";
+const MODEL_URL = "/emotion";
 
 const SUPABASE_URL = "https://dmabbvhzuyjifpjxmyxf.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_0eFiuFZ57jYSd83SvNIaeA_6O4Kr02n";

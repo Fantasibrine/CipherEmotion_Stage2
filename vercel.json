@@ -1,0 +1,5 @@
+{
+  "rewrites": [
+    { "source": "/emotion", "destination": "/api/emotion" }
+  ]
+}
