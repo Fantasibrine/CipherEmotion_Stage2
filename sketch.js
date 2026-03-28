@@ -1,4 +1,4 @@
-const MODEL_URL = "/emotion";
+const MODEL_URL = "/api/emotion";
 
 const SUPABASE_URL = "https://dmabbvhzuyjifpjxmyxf.supabase.co/";
 const SUPABASE_KEY = "sb_publishable_0eFiuFZ57jYSd83SvNIaeA_6O4Kr02n";
@@ -40,14 +40,6 @@ async function queryAI(text) {
   });
 
   const result = await response.json();
-
-  if (!response.ok) {
-    throw new Error(result.error || `Server error ${response.status}`);
-  }
-
-  if (!Array.isArray(result[0])) {
-    throw new Error("Unexpected response from emotion API");
-  }
 
   return result[0]
     .map((e) => ({
